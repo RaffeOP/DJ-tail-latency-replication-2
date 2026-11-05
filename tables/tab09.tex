@@ -1,0 +1,18 @@
+\begin{table}[!htbp]
+\centering
+\scriptsize
+\setlength{\tabcolsep}{3pt}
+\caption{Implementation facts for the evaluated allocators, read from the source trees at the tested versions. File references are relative to each tree; libmalloc is closed source.}
+\label{tab:taxonomy}
+\begin{tabular}{p{0.12\linewidth}p{0.30\linewidth}p{0.24\linewidth}p{0.22\linewidth}}
+\toprule
+Allocator & Remote-free path & Page or slab granule & Release advice\\
+\midrule
+mimalloc 3.5.4 & Cross-thread frees go through \texttt{mi\_free\_block\_mt} (\texttt{src/\allowbreak free.\allowbreak c}:70), which pushes onto the page's \texttt{xthread\_free} list (\texttt{src/\allowbreak free.\allowbreak c}:86--91) & 64~KiB small, 512~KiB medium, 4~MiB large pages (\texttt{include/\allowbreak mimalloc/\allowbreak types.\allowbreak h}:249--251) & Reset \texttt{MADV\_FREE}; decommit \texttt{MADV\_FREE\_REUSABLE} (\texttt{src/\allowbreak prim/\allowbreak unix/\allowbreak prim.\allowbreak c}:546--585) \\
+jemalloc 5.4.0 & Frees return to the owning bin under \texttt{bin->lock} (\texttt{src/\allowbreak arena.\allowbreak c}, \texttt{src/\allowbreak bin.\allowbreak c}:337) & Size classes (\texttt{include/\allowbreak jemalloc/\allowbreak internal/\allowbreak sc.\allowbreak h}); slabs tracked per bin (\texttt{bin.\allowbreak h}); dirty decay 10~s by default (\texttt{arena.\allowbreak h}:31) & Lazy purge \texttt{MADV\_FREE} on POSIX (\texttt{include/\allowbreak jemalloc/\allowbreak internal/\allowbreak os/\allowbreak \allowbreak posix/\allowbreak vm.\allowbreak h}:268--271) \\
+tcmalloc (gperftools 2.19.1) & \texttt{ListTooLong} releases batches to the central list (\texttt{src/\allowbreak thread\_cache.\allowbreak cc}:158, 185), which inserts under a \texttt{SpinLock} in \texttt{CentralFreeList:\allowbreak :\allowbreak InsertRange} (\texttt{src/\allowbreak central\_freelist.\allowbreak cc}:215) & 16~KiB pages on 64-bit ARM, 8~KiB elsewhere; 256~KiB maximum small size (\texttt{src/\allowbreak common.\allowbreak h}:74--87) & \texttt{MADV\_FREE} advisory release (\texttt{src/\allowbreak system-alloc.\allowbreak cc}:425) \\
+snmalloc 0.6.2 & One multi-producer single-consumer queue per allocator, one atomic exchange per append (\texttt{src/\allowbreak snmalloc/\allowbreak mem/\allowbreak remoteallocator.\allowbreak h}) & Size-class slabs (\texttt{src/\allowbreak snmalloc/\allowbreak mem/\allowbreak sizeclasstable.\allowbreak h}) & \texttt{MADV\_FREE\_REUSABLE} with paired \texttt{MADV\_FREE\_REUSE} (\texttt{src/\allowbreak snmalloc/\allowbreak pal/\allowbreak pal\_apple.\allowbreak h}:119--141) \\
+libmalloc (system baseline) & Closed source; not verifiable from source here & Closed source; not verifiable from source here & Not verifiable from source; footprint behaviour measured in Section~\ref{sec:rq4} \\
+\bottomrule
+\end{tabular}
+\end{table}

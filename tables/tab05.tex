@@ -1,0 +1,25 @@
+\begin{table}[!htbp]
+\centering
+\scriptsize
+\setlength{\tabcolsep}{3pt}
+\caption{8:1 handoff at 4 and 8 threads. The effective producer-to-consumer ratio is 3:1 at 4 threads (three producers, one consumer) and 7:1 at 8 threads (seven producers, one consumer), so the 4-thread case is a single performance-core cluster. CV is the coefficient of variation of throughput across 50 iterations. Latencies are pooled P99.9 in nanoseconds.}
+\label{tab:pcore}
+\begin{tabular}{llrrrrrrr}
+\toprule
+& & \multicolumn{3}{c}{4 threads (3:1 effective)} & \multicolumn{3}{c}{8 threads (7:1 effective)}\\
+\cmidrule(lr){3-5}\cmidrule(lr){6-8}
+Allocator & Size (B) & \shortstack{CV\\(\%)} & \shortstack{Prod.\ alloc\\$P_{99.9}$} & \shortstack{Cons.\ free\\$P_{99.9}$} & \shortstack{CV\\(\%)} & \shortstack{Prod.\ alloc\\$P_{99.9}$} & \shortstack{Cons.\ free\\$P_{99.9}$}\\
+\midrule
+mimalloc & 64 & 25 & 1904 & 210 & 25 & 1904 & 250 \\
+mimalloc & 4096 & 21 & 2400 & 712 & 19 & 8320 & 1072 \\
+jemalloc & 64 & 25 & 952 & 1872 & 24 & 1040 & 3232 \\
+jemalloc & 4096 & 21 & 1968 & 1520 & 20 & 7360 & 1904 \\
+tcmalloc & 64 & 60 & 1552 & 1488 & 72 & 1680 & 1264 \\
+tcmalloc & 4096 & 64 & 1744 & 792 & 74 & 6080 & 1552 \\
+snmalloc & 64 & 23 & 1136 & 372 & 24 & 1296 & 712 \\
+snmalloc & 4096 & 19 & 1840 & 872 & 16 & 6336 & 1456 \\
+libmalloc & 64 & 26 & 500 & 210 & 25 & 1200 & 292 \\
+libmalloc & 4096 & 39 & 8320 & 2528 & 24 & 17152 & 3040 \\
+\bottomrule
+\end{tabular}
+\end{table}

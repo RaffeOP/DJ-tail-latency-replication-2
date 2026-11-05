@@ -1,0 +1,20 @@
+# R2: Memory Allocator Benchmark Dependencies
+# 100% CPU Multi-Threaded Execution (Python 3.10+ and C++17)
+
+# C++ Build Tooling
+# Uses standard clang++ / g++ and native POSIX pthreads
+
+# Telemetry Ingestion, Extreme Value Theory & Math Analysis
+numpy>=1.24.0
+scipy>=1.10.0
+pandas>=2.0.0
+psutil>=5.9.0
+pyyaml>=6.0.0
+
+# Literature Ingestion (PRISMA-2020 Filtered)
+requests>=2.31.0
+beautifulsoup4>=4.12.0
+
+# Publication-Grade Scientific Plotting (300+ DPI, IEEE TrueType Font 42)
+matplotlib>=3.7.0
+seaborn>=0.12.0

@@ -1,0 +1,34 @@
+\section{Discussion}
+\label{sec:discussion}
+The findings are, in essence, separating two costs that are amassing measurements combine; the consumer's remote free and the producer's
+In mimalloc at 64~B the free tail is 250~ns and the allocation tail 1{,}904~ns, broadly speaking; allocation fail in separate places, broadly speaking.
+In jemalloc the order is reversing, with a 1{,}040~ns allocation tail and a 3{,}232~ns free tail, at least empirically. A benchmark that reports
+only a combined figure would not uncover which thread to tune, so also, the data do not establish the process behind either
+split. They are, in this setting, clear with a remote-free path that is cheap in one design and a shared arrangement that is
+claimed in the other, but no trial here separates that architecture.
+
+Across the 16~B, the size dependence is, in essence, the most concrete finding; in turn, also, no person allocator ranking is holding to 256~KB range, all things considered.
+For tcmalloc the large-size behaviour is a state the allocator is in for most iterations, not a homogeneous cost, in many respects. A larger
+The transfer-batch cap is tested by a source-level trial; in turn, in a ten-run ablation, per-process thread-cache budget did not change the median, in real-world scenarios.
+Raising the cap at 16~KB from four to 64 objects removes most of the slow mode (median allocation P99.9 from 737~$\mu$s to
+74~$\mu$s). The same kind of change at 256~KB, from two to four objects, does not, so the plateau above 16~KB has a
+differed cause, which the present examination did not spot, and the cap also trades small-object tails for large-object tails,
+as the source comment says.
+
+An supposition in current allocator design is changed by the coherence result, which is why the cost step for atomic writes on this ARM64 architecture
+lies at a 64-byte stride. Padding from 64 to 128~B changes the measured cost by at most 0.8~ns and 1.7 cycles at either
+thread count. The cycle counts disclose the cost is a processor stall, since the instruction count is flat, in actual application.
+The micro-architectural penalty is, at least in law, directly quantified by hardware latency and cycle metrics, in real-world scenarios.
+
+The release is, in effect, ensuing actionably guide for allocators managing virtual memory on modern UNIX kernels, in real-world scenarios. Without memory pressure,
+\texttt{MADV\_DONTNEED} and standard \texttt{MADV\_FREE} do not change the size the framework reports. An allocator that rests
+on them to bound size will see no reduction until pressure builds, which is why also, the put forward inquiry does not reproduce that
+condition. \texttt{MADV\_FREE\_REUSABLE} does change size promptly. The access tails under the release were
+indistinguishable from the no-release control, so the probe is finding no measurable interference from release on
+concurrent is reading at this granularity. The reuse tails varied between repeat measurements. Also, No policy given a uniform reuse
+advantage.
+
+A second, separate issue is had by the system allocator, which is why still, its size under the KV-churn model was bimodal across the runs,
+with half the runs near 10--14~MB and half between 40 and 88~MB; while the other four allocators reproduced their sizes
+across repeat measurements. Any comparison that is applying a person measurement for the system allocator's size is therefore fragile, at least for now.
+The cause is not spotted.

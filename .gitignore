@@ -1,0 +1,53 @@
+# OS files
+.DS_Store
+Thumbs.db
+
+# Environment and secrets
+.env
+.env.*
+*.env
+
+# Python artifacts
+__pycache__/
+*.py[cod]
+*$py.class
+.pytest_cache/
+.coverage
+htmlcov/
+*.egg-info/
+dist/
+build/
+
+# C/C++ compilation artifacts
+bin/
+lib/
+*.o
+*.obj
+*.so
+*.dylib
+*.a
+*.dSYM/
+
+# LaTeX build intermediates (keep final PDFs in paper/ and figures/)
+paper/*.aux
+paper/*.log
+paper/*.out
+paper/*.toc
+paper/*.bbl
+paper/*.blg
+paper/*.fls
+paper/*.fdb_latexmk
+paper/*.synctex.gz
+paper/.tectonic/
+
+# Logs (except study logs)
+*.log
+!data/logs/*.log
+
+# IDE & Editor files
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+.claude/

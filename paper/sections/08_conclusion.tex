@@ -1,0 +1,15 @@
+\section{Conclusion}
+\label{sec:conclusion}
+On an 8-core heterogeneous multicore processor (four performance and four efficiency cores) under a modern 64-bit Unix-based operating system, cross-thread handoff raises P99.9 event latency from the timer tick, 42--250~ns
+under the symmetric use, to 250--2{,}976~ns at 64~B and eight threads, under 8:1 handoff, in many respects; the ordering of the allocators
+rests on object size and on which side of the handoff is measured; thus, above 16~KB, tcmalloc's allocation tail is in a
+slow mode for most iterations, with medians of 0.84~ms at 16~KB and 1.16~ms at 256~KB, on the whole. A larger thread-cache budget
+did not change that median. Raising the transfer-batch cap in a patched source build removes most of the 16~KB slow
+mode, but not the 256~KB one.
+
+The atomic-write cost steps at a 64-byte stride, and the step is a processor stall, visible in cycle counts with flat
+instruction counts. Physical resident footprint is, in practice, actively lowered with \texttt{MADV\_FREE\_REUSABLE} by virtual memory page release, in many respects. Of
+the five pre-measurement hypotheses, the qualitative 64-byte ordering (H1) and the KV-churn bloat prediction (H3) hold,
+Reclamation (H4), and saturation (H5) do not hold on this platform, while the quantitative predictions for false-sharing penalties (H2), in real-world scenarios.
+
+The critical part of asymmetric handoff topologies, coherence granularity, and kernel page-release dynamics in controlling allocator tail latency in high-concurrency systems is established by our findings, all things considered.

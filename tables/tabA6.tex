@@ -1,0 +1,53 @@
+\begin{table}[!htbp]
+\centering
+\footnotesize
+\setlength{\tabcolsep}{3pt}
+\caption{Producer-side allocation and consumer-side remote-free P99.9 latency (ns) under 8:1 handoff at 8 threads, all eight size classes. Pooled P99.9 is the event percentile over both paths.}
+\label{tab:producer-consumer-8to1}
+\begin{tabular}{llrrr}
+\toprule
+Size (B) & Allocator & Producer alloc $P_{99.9}$ & Consumer free $P_{99.9}$ & Pooled $P_{99.9}$\\
+\midrule
+16 & mimalloc & 125 & 210 & 210 \\
+16 & jemalloc & 952 & 3{,}232 & 2{,}976 \\
+16 & tcmalloc & 1{,}712 & 1{,}424 & 1{,}552 \\
+16 & snmalloc & 1{,}456 & 166 & 664 \\
+16 & libmalloc & 420 & 292 & 332 \\
+64 & mimalloc & 1{,}904 & 250 & 250 \\
+64 & jemalloc & 1{,}040 & 3{,}232 & 2{,}976 \\
+64 & tcmalloc & 1{,}680 & 1{,}264 & 1{,}456 \\
+64 & snmalloc & 1{,}296 & 712 & 1{,}040 \\
+64 & libmalloc & 1{,}200 & 292 & 792 \\
+256 & mimalloc & 2{,}656 & 372 & 1{,}808 \\
+256 & jemalloc & 920 & 2{,}464 & 2{,}272 \\
+256 & tcmalloc & 1{,}872 & 1{,}360 & 1{,}680 \\
+256 & snmalloc & 1{,}296 & 744 & 1{,}136 \\
+256 & libmalloc & 2{,}464 & 1{,}296 & 2{,}080 \\
+1024 & mimalloc & 2{,}336 & 500 & 1{,}744 \\
+1024 & jemalloc & 1{,}200 & 1{,}552 & 1{,}488 \\
+1024 & tcmalloc & 2{,}656 & 1{,}808 & 2{,}144 \\
+1024 & snmalloc & 1{,}840 & 1{,}072 & 1{,}360 \\
+1024 & libmalloc & 3{,}808 & 2{,}144 & 3{,}104 \\
+4096 & mimalloc & 8{,}320 & 1{,}072 & 6{,}848 \\
+4096 & jemalloc & 7{,}360 & 1{,}904 & 5{,}440 \\
+4096 & tcmalloc & 6{,}080 & 1{,}552 & 3{,}808 \\
+4096 & snmalloc & 6{,}336 & 1{,}456 & 4{,}928 \\
+4096 & libmalloc & 17{,}152 & 3{,}040 & 10{,}624 \\
+16384 & mimalloc & 20{,}224 & 2{,}080 & 10{,}624 \\
+16384 & jemalloc & 20{,}736 & 6{,}464 & 17{,}664 \\
+16384 & tcmalloc & 729{,}088 & 4{,}160 & 80{,}896 \\
+16384 & snmalloc & 42{,}496 & 2{,}528 & 26{,}880 \\
+16384 & libmalloc & 51{,}712 & 3{,}424 & 24{,}320 \\
+65536 & mimalloc & 16{,}000 & 1{,}488 & 11{,}136 \\
+65536 & jemalloc & 13{,}184 & 2{,}032 & 11{,}904 \\
+65536 & tcmalloc & 745{,}472 & 4{,}544 & 80{,}896 \\
+65536 & snmalloc & 23{,}808 & 1{,}776 & 15{,}744 \\
+65536 & libmalloc & 11{,}392 & 4{,}800 & 9{,}088 \\
+262144 & mimalloc & 17{,}664 & 744 & 11{,}136 \\
+262144 & jemalloc & 15{,}744 & 3{,}232 & 12{,}672 \\
+262144 & tcmalloc & 2{,}260{,}992 & 17{,}152 & 1{,}196{,}032 \\
+262144 & snmalloc & 46{,}592 & 1{,}264 & 16{,}000 \\
+262144 & libmalloc & 17{,}664 & 11{,}648 & 14{,}464 \\
+\bottomrule
+\end{tabular}
+\end{table}

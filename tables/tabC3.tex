@@ -1,0 +1,28 @@
+\begin{table}[!htbp]
+\centering
+\scriptsize
+\setlength{\tabcolsep}{3pt}
+\caption{Sustained trace workloads on 8-core heterogeneous hardware under Unix-based OS. Each cell reports medians over $n$ repetitions. Bloat is peak footprint divided by peak live bytes.}
+\label{tab:trace}
+\begin{tabular}{llrrrrrr}
+\toprule
+Workload & Allocator & $n$ & \shortstack{Throughput\\(Mops/s)} & \shortstack{Peak footprint\\(MB)} & \shortstack{Peak live\\(MB)} & \shortstack{Bloat\\ratio} & \shortstack{Event P99.9\\(ns)}\\
+\midrule
+gRPC pipeline & mimalloc & 8 & 3.12 & 19.2 & 6.8 & 2.84 & 2{,}624 \\
+gRPC pipeline & jemalloc & 8 & 3.41 & 33.3 & 6.8 & 4.88 & 3{,}776 \\
+gRPC pipeline & tcmalloc & 8 & 2.66 & 16.0 & 6.8 & 2.36 & 2{,}400 \\
+gRPC pipeline & snmalloc & 8 & 3.33 & 15.3 & 6.8 & 2.25 & 1{,}968 \\
+gRPC pipeline & libmalloc & 8 & 2.62 & 11.1 & 6.8 & 1.64 & 1{,}248 \\
+KV churn & mimalloc & 8 & 29.08 & 10.8 & 2.7 & 3.94 & 146 \\
+KV churn & jemalloc & 8 & 29.08 & 11.5 & 2.7 & 4.19 & 85 \\
+KV churn & tcmalloc & 8 & 28.63 & 12.8 & 2.7 & 4.67 & 125 \\
+KV churn & snmalloc & 8 & 27.60 & 10.4 & 2.7 & 3.80 & 125 \\
+KV churn & libmalloc & 8 & 21.32 & 27.1 & 2.7 & 9.94 & 460 \\
+AST graph & mimalloc & 8 & 28.80 & 66.9 & 27.0 & 2.60 & 856 \\
+AST graph & jemalloc & 8 & 32.81 & 47.0 & 27.9 & 1.67 & 1{,}872 \\
+AST graph & tcmalloc & 8 & 26.15 & 40.1 & 26.8 & 1.50 & 480 \\
+AST graph & snmalloc & 8 & 30.51 & 54.7 & 27.6 & 2.00 & 2{,}112 \\
+AST graph & libmalloc & 8 & 15.88 & 56.9 & 26.2 & 2.19 & 752 \\
+\bottomrule
+\end{tabular}
+\end{table}

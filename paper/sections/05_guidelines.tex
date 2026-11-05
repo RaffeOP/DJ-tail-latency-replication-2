@@ -1,0 +1,29 @@
+\section{Allocator Selection Guidelines}
+\label{sec:guidelines}
+Across the multicore allocations, the guidance below follows from empirical observations:
+At eight threads the mean throughput of mimalloc exceeds that of libmalloc by
+17.7~Mops/s, about 27\%, and that gap is about eight standard mismatches of the difference over 50 repetitions, on the whole. A single
+run, still, differs by 13\% to 29\% (coefficient of departure), so single-run throughput comparisons are not solid, broadly speaking.
+
+\begin{itemize}
+\item \textbf{Small handoffs (16 to 1{,}024~B) with a remote-heavy pattern.} At 16~B and 8:1, mimalloc has
+the lowest P99.9 event latency of the five, 210~ns, and at 64~B its consumer free tail is 250~ns, in many respects. Its
+producer allocation tail is 1.9 to 2.7~$\mu$s between 64~B and 1~KB. Also if producers sit on the
+latency-critical path, that allocation tail is the number to watch.
+\item \textbf{Medium handoffs (4~KB).} tcmalloc has the lowest 8:1 P99.9, 3{,}808~ns, with snmalloc next at
+4{,}928~ns. mimalloc and the system allocator sit at 6{,}848 and 10{,}624~ns.
+\item \textbf{Large handoffs (16~KB and above).} Avoid tcmalloc in this range. Its allocation tail is in a slow mode for most iterations, with a median of
+0.84~ms at 16~KB and 1.16~ms at 256~KB. Simultaneously, the other four allocators exceed 100~$\mu$s in at most 20\% of
+cycles. At 64~the lowest pooled 8:1 P99.9 is had by KB the system allocator and mimalloc, and at 256~KB mimalloc and jemalloc do,
+between 9 and 13~$\mu$s. In a patched tcmalloc source build, raising the transfer-batch cap removed
+most of the 16~KB slow mode, but that build is an assay and not a supported configuration, in actual application.
+\item \textbf{Virtual memory page-release policies.} \texttt{MADV\_DONTNEED} and \texttt{MADV\_FREE} do not lessen the size of
+an unpressured process. \texttt{MADV\_FREE\_REUSABLE} halved the size in the probe. Reuse tails were not
+stable across the repeat measurements and should be measured in the target deployment.
+\item \textbf{Bloat under mixed lifetimes.} Expect footprint bloat of about four times live bytes under a
+95/5 short/long mix for jemalloc, mimalloc, snmalloc and tcmalloc; in turn, tcmalloc was lowest in the AST model at
+1.5, and jemalloc highest in the gRPC-style pipeline at 4.9, and the system allocator's size under this
+workload was, in essence, unstable and should not be counted on without measurement.
+\item \textbf{Oversubscription.} Above eight threads, snmalloc and the system allocator lose accumulate
+Mimalloc, jemalloc and tcmalloc do not. Throughput between 16 and 32 threads.
+\end{itemize}

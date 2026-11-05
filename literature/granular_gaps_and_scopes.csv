@@ -1,0 +1,11 @@
+Gap_ID,Open_Question,Representative_Prior_Work,How_This_Study_Addresses_It
+GAP-01,Remote-free batching cost on producer-consumer loads,"BatchIt, ISMM 2024 (intellectual abstract): per-slab batching of remote frees",Event-level distributions for mimalloc and snmalloc baselines (Table [tab:uncertainty]); BatchIt not evaluated
+GAP-02,Coherence granule for atomic writes on ARM64 architectures,No peer-reviewed 2024-2026 measurement found in our search,64-byte step with process cycle counts (Fig. [fig:fig06])
+GAP-03,Hardware false-sharing repair on commodity processors,"Patel et al., MICRO 2024: MESI extension evaluated in simulation",Real-hardware latency and cycle probe; repair not implemented
+GAP-04,Defragmentation of unmanaged heaps,"Wanninger et al., ASPLOS 2024: handle-based heap with compiler and runtime support",Footprint under OS page release advice without compiler changes (Fig. [fig:fig10])
+GAP-05,Large-object tail mechanism in tcmalloc,"Fleet-scale TCMalloc characterization (ASPLOS 2024) covers production use, not the open-source build",Source-level batch-cap experiment (Table [tab:batchcap])
+GAP-06,TLB shootdown cost on commodity operating systems,"Amit (ATC 2017), LATR (ASPLOS 2018), DiDi (PACT 2011): Linux or hardware studies; Schimmelpfennig et al. (PDP 2025): Linux mmap page recycling",Microarchitectural shootdown characterization (Section [sec:threats])
+GAP-07,Event-level tail amplification under handoff for production allocators,No controlled 2024+ study of handoff tails found; the fleet characterization (ASPLOS 2024) reports allocation patterns,"Five allocators, four topologies, eight sizes, six thread counts, 50 iterations"
+GAP-08,Extreme quantiles from binned latency histograms,Pickands 1975; Balkema and de Haan 1974; Hosking and Wallis 1987 (theory),Grouped likelihood with threshold sensitivity (Table [tab:gpd])
+GAP-09,Scalability of allocators on heterogeneous cores,Gunther 2007 (USL); no modern ARM64 allocator study found,Symmetric USL fits with core-cluster caveats (Table [tab:usl])
+GAP-10,Footprint bimodality of the system allocator under churn,No literature found,Reported with repeat runs; cause left open

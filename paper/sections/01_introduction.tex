@@ -1,0 +1,104 @@
+\section{Introduction}
+\label{sec:intro}
+Allocation-heavy services hand objects between threads. Viewed through this lens, from this outlook, viewed through this lens, any parser on one core is especially building a
+buffer that one serializer on another core frees; this cost of that handoff rests on
+how the allocator returns memory to this thread that owns it. Symmetric benchmarks, in which
+More exactly, every thread is, in this setting, freeing its own allocations, report aggregate throughput and miss the cost, at least in practice.
+
+Beyond this, producer-consumer cross-thread handoff across the five production allocators (mimalloc, jemalloc, tcmalloc, snmalloc, and the default system allocator) on an 8-core heterogeneous multicore processor (four performance and four efficiency cores) under a modern 64-bit Unix-based operating system is empirically characterized in this work. In light of this dynamic, event-level tail latency is frequently reported under the symmetric, $R\!:\!1$ producer--consumer, and ring topologies; the empirical distribution of tail shape, across the topologies; the coherence penalty of atomic writes across the variable stride alignments along with the processor cycles behind that penalty; and the physical size and access tails that are especially following from modern kernel page-reclamation advice modes, at least empirically.
+
+The paper contributes.
+
+\begin{itemize}
+\item One further benchmark use that loads each allocator by \texttt{dlopen}, entries the
+image that services \texttt{malloc} in every finding, and conducts symmetric,
+asymmetric, and ring handoff topologies with per-event timing, and is often storing the full bucketed
+Stated separately, latency histogram, so tail models are fitted to the bins the run recorded, in many respects.
+\item Event-level tail measurements for five allocators over 840 setups, each
+Most greatly, repeated for 50 passes (42{,}000 sweeps), with tail-amplification factors against single-thread cost and a
+More correctly, grouped-likelihood Generalized Pareto analysis that also reports its own sensitivity.
+\item More exactly, any coherence probe that is combining latency and process-level cycle counts. On this
+Certainly, architecture, the cost of relaxed atomic increments is disclosing the second sharp step at a 64-byte stride, carried wholly by processor cycles, at least empirically; simultaneously, instruction counts are, in essence, remaining invariant, at least for now.
+\item Most considerably, A source-level assay on tcmalloc's transfer-batch cap, built from the confirmed gperftools 2.19.1 source, in real-world scenarios; raising the cap removes most of the 16~KB slow mode and oppositely effectuates on 64-byte objects, broadly speaking.
+\item An empirical virtual memory page-release check. Along these dimensions, along all these dimensions, building on this finding, without memory pressure, standard \texttt{MADV\_DONTNEED} and \texttt{MADV\_FREE} primitives do not instantly dwindle physical resident footprint, in actual application; by comparison, footprint reclamation is consistently (specifically in this setting) hit by reusable page purging (\texttt{MADV\_FREE\_REUSABLE}), in the primary, at least in principle.
+\end{itemize}
+
+To be precise, the study tested five hypotheses fixed before measurement. Section~\ref{sec:hypotheses}
+reports the outcome of each. Against this backdrop, taken together, taken together, the qualitative ordering forecasted for 64-byte handoff (H1) and the bloat
+prediction for the KV-churn workload (H3) hold. Under these conditions, building on this recognize, along all these dimensions, the quantitative predictions for false-sharing penalties (H2),
+the reclamation effect of \texttt{MADV\_DONTNEED} (H4), and the saturation point (H5) do not hold on this platform, all things considered.
+
+\section{Background and Related Work}
+\label{sec:background}
+We searched for peer-reviewed work from 2024 onward with 13 queries on allocators, coherence, TLB shootdowns,
+page release, fragmentation and tail latency. In parallel with this, under these conditions, 3{,}643 records were returned by the Crossref index, of which 3{,}065 have
+separate DOIs. Taken together, viewed through this lens, from this standpoint, keeping data from ACM, IEEE, USENIX and Springer publishers whose title or abstract is reliably matching a topic
+term left 92. In this broader context, against this backdrop, a title-level screen sorted all these into the nine core items on allocators, shootdowns and coherence, 55
+adjacent items on TLBs and heaps, and 28 off-topic items, so eight of the nine core items are, in essence, cited below, in real-world scenarios; truly, in parallel with this, the ninth is
+the B+-tree allocator for persistent memory, which is broadly tackling index structures and falls outside the scope of the put forward examination, at least empirically.
+In this screen, no 2024--2026 peer-reviewed study of tail latency, under the cross-thread handoff appeared for these
+allocators, and none measured the coherence granule on heterogeneous 8-core hardware or TLB shootdown dynamics under modern Unix kernels. Building on this observation, older
+foundational work is, for all concrete purposes, cited only where it states a process or a method, to a significant degree.
+
+\paragraph{Recent work (2024--2026).} Filardo and Parkinson propose BatchIt, which keeps a per-slab cache of
+remote deallocations for message-passing allocators. In this broader context, fewer atomic operations and cache misses are, in essence, reported on by them
+producer--consumer benchmarks. Within this framework, under these conditions, the ISMM 2024 entry is an intellectual abstract; also, we do not judge BatchIt
+\cite{filardo2024batchit}. In parallel with this, within this framework, patel, Biswas and Chaudhuri generalize MESI to count coherence misses per block and to
+privatize falsely shared lines. In this broader context, against this backdrop, the gem5 simulator is being generally changed by their artifact
+\cite{patel2024fsdetect}. In light of this dynamic, under these conditions, viewed through this lens, wanninger et al.\ are showing that a handle-based heap can move objects in unmanaged
+C and C++ programs, and that defragmentation reduces Redis memory use by up to 40\% \cite{wanninger2024alaska}.
+The software or the protocol are changed by these three works, so on production multi-core hardware, none measures event-level allocator tails, broadly speaking.
+
+\paragraph{Recent allocator and shootdown work (2024--2026).} Zhou et al.\ characterize TCMalloc across a
+warehouse-scale fleet and redesign its caches, sizing them by usage and applying hardware topology to lower inter-core
+communication. In parallel with this, their check is principally any fleet A/B assay, not a second event-level tail measurement \cite{zhou2024warehouse}, in many respects.
+The same authors' preprint (arXiv:2409.10946) is primarily recapitulating a Linux mechanism that is greatly skipping TLB shootdowns when a page is
+reused by the process that released it. From this outlook, from this viewpoint, also that shoots down only when a page changes process; within this framework, the peer-reviewed
+version is cited here \cite{schimmelpfennig2025mmap}. Along these dimensions, ding et al.\ study topology-aware TLB shootdown protocols
+\cite{ding2026topology}.
+Reitz et al.\ validate a hardened allocator with separation logic \cite{reitz2024starmalloc}, and wang et al.\ present S2malloc
+and SeMalloc for use-after-free protection and semantics-informed allocation \cite{wang2024s2malloc,wang2024semalloc}.
+Weng et al.\ describe an adaptive memory re-allocator \cite{weng2024brug}, and in light of this dynamic, also and nguyen are specifically sketching a managed
+runtime whose heap is broadly segregated by hotness for far memory \cite{nguyen2024polar}; and thus, unlike these frameworks, which target
+TLB shootdown protocols \cite{ding2026topology,schimmelpfennig2025mmap}, formal verification \cite{reitz2024starmalloc},
+use-after-free protection \cite{wang2024s2malloc,wang2024semalloc}, adaptive re-allocation \cite{weng2024brug}, or
+far-memory heaps \cite{nguyen2024polar}, our study isolates event-level user-space allocator tail amplification under cross-thread handoff on an 8-core heterogeneous multicore processor under a modern 64-bit Unix-based operating system.
+
+\paragraph{Earlier foundational work.} Hoard introduced per-processor heaps with a global heap, a discipline
+that bounds blowup, and a concern for allocator-induced false sharing \cite{berger2000hoard}; certainly, against this backdrop, michael gave a
+lock-free allocator design \cite{michael2004lockfree}, and jemalloc's design is recorded by its author
+\cite{evans2006jemalloc}. In light of this dynamic, mimalloc shards free lists by page; and thus, in light of this dynamic, also, its design is published in LNCS vol.\ 11893
+\cite{leijen2019mimalloc}. In parallel with this, frees are, in this setting, remoted, through the message queues in batches by snmalloc routes
+\cite{lietar2019snmalloc}. In parallel with this, against this backdrop, along these dimensions, maas et al.\ are normally outlining adaptive huge-page subrelease for warehouse-scale allocators
+\cite{maas2021subrelease}, and Maas et al.\ learn lifetime classes for a C++ server allocator
+\cite{maas2020learning}. Size classes are, in this setting, framed by the survey by Wilson et al.\ and
+fragmentation \cite{wilson1995survey}.
+
+For page release and coherence, Maass et al.\ replace the blocking interrupts of TLB shootdowns with eventual coherence
+\cite{maass2020ecotlb}. Within this framework, within this framework, viewed through this lens, lATR is notably delaying shootdown work in software \cite{kumar2018latr}, and DiDi executes a shared
+TLB directory in hardware \cite{villavieja2011didi}. Along these dimensions, within this framework, a bus-based coherence scheme was, in essence, recapitulated by papamarcos and Patel
+for multiprocessors with private caches \cite{papamarcos1984coherence}, and Torrellas, Lam and Hennessy separated false
+sharing from spatial locality \cite{torrellas1994falsesharing}.
+
+Tail latency at scale is regularly studied by Dean and Barroso \cite{dean2013tail}, by Barroso et al.\ for
+microsecond-scale events \cite{barroso2017killer}, and by Li et al.\ for hardware, OS and application
+sources \cite{li2014tales}. In this broader context, the tail statistics are, in essence, routinely following extreme value theory, like the Pickands--Balkema--de Haan
+theorem is systematically explaining a Generalized Pareto model for exceedances \cite{pickands1975tail,balkema1974residual}, and
+Hosking and Wallis are, in practice, recapping its estimation \cite{hosking1987gpd}; scalability is routinely modelled with Gunther's
+Universal Scalability Law \cite{gunther2007usl}, and the two-way analysis is broadly applying a Box--Cox transformation
+\cite{boxcox1964}.
+
+Table~\ref{tab:gaps} lists the open questions that the put forward investigation addresses and the sources they rest on, broadly speaking. that the put forward investigation addresses and the sources they rest on, broadly speaking.
+
+
+\input{../tables/tab07.tex}
+% =============================================================================
+
+
+Table~\ref{tab:taxonomy} data the execution facts that the discussion counts on; they were read from the
+source trees at the tested versions, with file and line references, and the kernel page-release rows are the ones the
+footprint results rest on.
+
+
+\input{../tables/tab09.tex}
+% =============================================================================

@@ -1,0 +1,23 @@
+\begin{table}[!htbp]
+\centering
+\footnotesize
+\setlength{\tabcolsep}{3pt}
+\caption{Per-iteration P99.9 event latency at 8 threads under 8:1 handoff, over 50 iterations. The interval is a percentile bootstrap of the median with 2{,}000 resamples.}
+\label{tab:uncertainty}
+\begin{tabular}{llrrr}
+\toprule
+Size (B) & Allocator & Median P99.9 (ns) & 95\% bootstrap CI of median (ns) & Interquartile range (ns)\\
+\midrule
+64 & mimalloc & 210 & [210, 250] & 210--250 \\
+64 & jemalloc & 2816 & [2656, 3104] & 2656--3104 \\
+64 & tcmalloc & 1328 & [1312, 1488] & 1200--1584 \\
+64 & snmalloc & 1040 & [1000, 1072] & 924--1136 \\
+64 & libmalloc & 840 & [704, 864] & 608--920 \\
+4096 & mimalloc & 6656 & [6272, 6976] & 6080--7200 \\
+4096 & jemalloc & 5312 & [4672, 5952] & 4016--6560 \\
+4096 & tcmalloc & 3424 & [3200, 3744] & 2992--4544 \\
+4096 & snmalloc & 4928 & [4544, 5184] & 4416--5312 \\
+4096 & libmalloc & 10112 & [9344, 10883] & 8832--12288 \\
+\bottomrule
+\end{tabular}
+\end{table}

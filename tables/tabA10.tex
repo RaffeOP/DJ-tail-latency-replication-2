@@ -1,0 +1,23 @@
+\begin{table}[!htbp]
+\centering
+\footnotesize
+\setlength{\tabcolsep}{4pt}
+\caption{GPD threshold sensitivity under 8:1 handoff at 8 threads. Each cell gives the shape of the GPD fitted to the pooled histogram, $\hat{\xi}_{\text{pooled}}$, and in parentheses the percent error of the fitted $\hat{Q}(0.999)$ against the empirical P99.9 of the same pooled distribution. The 95th-percentile pooled shape differs from the mean of the 50 per-iteration shapes in Table~\ref{tab:gpd}, because pooling mixes the iterations before the fit. Identical entries across thresholds mean that the threshold percentile fell on the same histogram bucket.}
+\label{tab:gpd-sensitivity}
+\begin{tabular}{llrrrrr}
+\toprule
+Size (B) & Pctl & mimalloc & jemalloc & tcmalloc & snmalloc & libmalloc\\
+\midrule
+64 & 90 & 0.252 (+73.2) & 0.139 (-8.3) & 0.454 (+9.8) & 0.149 (+35.9) & 0.166 (-31.9) \\
+64 & 92.5 & 0.252 (+73.2) & 0.139 (-8.3) & 0.501 (+33.2) & 0.149 (+35.9) & 0.418 (-33.4) \\
+64 & 95 & 0.252 (+73.2) & 0.139 (-8.3) & 0.501 (+33.2) & 0.149 (+35.9) & 0.293 (-30.6) \\
+64 & 97.5 & 0.825 (+75.4) & 0.139 (-8.3) & 0.450 (+49.7) & 0.149 (+35.9) & 0.526 (-26.7) \\
+64 & 98 & 0.470 (+73.7) & 0.139 (-8.3) & 0.522 (+36.7) & 0.149 (+35.9) & 0.526 (-26.7) \\
+4096 & 90 & 0.461 (-52.7) & 0.144 (-28.2) & 0.561 (+0.6) & 0.364 (-39.8) & 0.299 (+6.3) \\
+4096 & 92.5 & 0.574 (-45.9) & 0.175 (-29.5) & 0.574 (+5.9) & 0.470 (-37.7) & 0.369 (+10.6) \\
+4096 & 95 & 0.746 (-36.5) & 0.258 (-30.7) & 0.626 (+11.4) & 0.634 (-30.6) & 0.441 (+15.1) \\
+4096 & 97.5 & 1.009 (-18.7) & 0.510 (-31.6) & 0.910 (+42.1) & 0.985 (-9.8) & 0.560 (+21.8) \\
+4096 & 98 & 1.166 (-8.4) & 0.621 (-30.9) & 0.923 (+45.1) & 1.195 (+3.6) & 0.601 (+23.2) \\
+\bottomrule
+\end{tabular}
+\end{table}

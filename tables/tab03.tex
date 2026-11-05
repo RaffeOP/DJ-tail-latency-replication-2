@@ -1,0 +1,21 @@
+\begin{table}[!htbp]
+\centering
+\footnotesize
+\setlength{\tabcolsep}{3pt}
+\caption{Box-Cox two-way parametric ANOVA on per-iteration P99.9 event latency (8 threads). Factors: allocator (5 levels) and topology (4 levels), 50 replicates per cell. Classical $\eta^2$ values sum with the residual to one.}
+\label{tab:anova}
+\begin{tabular}{llrrrrr}
+\toprule
+Size (B) & Source & df & $F$ & $p$ & $\eta^2$ (share of $SS_{\mathrm{total}}$) & $\eta_p^2$ (partial)\\
+\midrule
+64 & allocator & 4 & 1231.08 & $<10^{-300}$ & 0.186 & 0.834 \\
+64 & topology & 3 & 5515.03 & $<10^{-300}$ & 0.625 & 0.944 \\
+64 & allocator x topology & 12 & 335.74 & $<10^{-300}$ & 0.152 & 0.804 \\
+64 & Residual & 980 & -- & -- & 0.037 & -- \\
+4096 & allocator & 4 & 612.25 & 1e-264 & 0.115 & 0.714 \\
+4096 & topology & 3 & 5659.12 & $<10^{-300}$ & 0.797 & 0.945 \\
+4096 & allocator x topology & 12 & 73.52 & 1.4e-127 & 0.041 & 0.474 \\
+4096 & Residual & 980 & -- & -- & 0.046 & -- \\
+\bottomrule
+\end{tabular}
+\end{table}

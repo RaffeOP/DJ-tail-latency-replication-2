@@ -1,0 +1,21 @@
+\begin{table}[!htbp]
+\centering
+\footnotesize
+\setlength{\tabcolsep}{3pt}
+\caption{Pooled P99.9 event latency (ns) at 8 threads under symmetric handoff, all eight size classes. Each cell pools allocation and free events over 50 iterations.}
+\label{tab:atlas-symmetric}
+\begin{tabular}{rrrrrr}
+\toprule
+Size (B) & mimalloc & jemalloc & tcmalloc & snmalloc & libmalloc \\
+\midrule
+16 & 42 & 42 & 292 & 58 & 250 \\
+64 & 42 & 42 & 125 & 85 & 250 \\
+256 & 42 & 83 & 42 & 125 & 166 \\
+1024 & 42 & 85 & 42 & 125 & 292 \\
+4096 & 42 & 85 & 42 & 125 & 250 \\
+16384 & 42 & 85 & 42 & 125 & 292 \\
+65536 & 58 & 210 & 42 & 4{,}544 & 66{,}560 \\
+262144 & 83 & 460 & 125 & 4{,}928 & 80{,}896 \\
+\bottomrule
+\end{tabular}
+\end{table}

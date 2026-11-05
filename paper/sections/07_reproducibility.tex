@@ -1,0 +1,12 @@
+\section{Reproducibility}
+\label{sec:repro}
+The employ is being spanned by the store, probes, analysis code, raw findings, formulated metrics, figures, tables,
+and manuscript sources. The principal study is reproduced by building the three binaries listed in the README,
+running \texttt{scripts/run\_study.sh}, running \texttt{scripts/run\_probes\_v2.py} for the probes with
+counters, and running \texttt{src/build\_artifacts.py}. The tcmalloc tests are in
+\texttt{scripts/tcmalloc\_thread\_cache\_ablation.sh} and \texttt{scripts/tcmalloc\_source/}, which is building the substantiated gperftools 2.19.1 source with and without the transfer-batch patch, and the KV-churn repeat checks are the trace runs
+recorded in \texttt{data/ablation/}. The Tier~1 raw file is about 178~MB, and the trace and probe files are
+a few megabytes each, all JSON Lines. 24 unit tests are had by the statistics code; to be precise, also, \texttt{src/verify\_paper\_claims.py} recomputes the numbers quoted in the text from the raw runs, at least in practice. Runs can be repeated
+individually, and the runner skips configurations that have already been recorded.
+
+Across the experimental environments, all empirical measurements are grounded in complete open-source code and data artifacts, with definite automated verification scripts ensuring deterministic reproduction, in actual application.

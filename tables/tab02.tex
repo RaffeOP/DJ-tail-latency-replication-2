@@ -1,0 +1,23 @@
+\begin{table}[!htbp]
+\centering
+\scriptsize
+\setlength{\tabcolsep}{3pt}
+\caption{Grouped GPD fits above the 95th percentile, 8:1 topology, 8 threads. Shape is the mean of 50 per-iteration fits with a 95\% interval of that mean. Quantile error compares the fitted $\hat{Q}(0.999)$ with the empirical P99.9 of the same pooled distribution.}
+\label{tab:gpd}
+\begin{tabular}{llrrrrrr}
+\toprule
+Size (B) & Allocator & \shortstack{$\hat{\xi}$\\(95\% CI)} & \shortstack{$u$\\(ns)} & \shortstack{Empirical\\$P_{99.9}$ (ns)} & \shortstack{$\hat{Q}(0.999)$\\(ns)} & \shortstack{Error\\(\%)} & \shortstack{$\hat{Q}(0.9999)$\\(ns)}\\
+\midrule
+64 & mimalloc & 0.363 $\pm$ 0.091 & 42 & 250 & 433 & +73.2 & 947 \\
+64 & jemalloc & 0.137 $\pm$ 0.013 & 42 & 2976 & 2730 & -8.3 & 6590 \\
+64 & tcmalloc & 0.483 $\pm$ 0.040 & 166 & 1456 & 1939 & +33.2 & 6456 \\
+64 & snmalloc & 0.147 $\pm$ 0.013 & 42 & 1040 & 1413 & +35.9 & 3316 \\
+64 & libmalloc & 0.459 $\pm$ 0.088 & 85 & 792 & 550 & -30.6 & 1231 \\
+4096 & mimalloc & 0.706 $\pm$ 0.026 & 420 & 6848 & 4347 & -36.5 & 23464 \\
+4096 & jemalloc & 0.258 $\pm$ 0.025 & 536 & 5440 & 3772 & -30.7 & 7939 \\
+4096 & tcmalloc & 0.723 $\pm$ 0.038 & 292 & 3808 & 4241 & +11.4 & 18172 \\
+4096 & snmalloc & 0.703 $\pm$ 0.031 & 664 & 4928 & 3422 & -30.6 & 13416 \\
+4096 & libmalloc & 0.425 $\pm$ 0.031 & 1712 & 10624 & 12228 & +15.1 & 34774 \\
+\bottomrule
+\end{tabular}
+\end{table}

@@ -1,0 +1,152 @@
+\section{Platform, Allocators, and Harness}
+\label{sec:platform}
+\subsection{Platform}
+All measurements were conducted on an 8-core heterogeneous multicore processor configured with four high-performance out-of-order cores, four high-efficiency cores, and unified low-latency memory running a modern 64-bit Unix-based operating system. Worker threads execute under high-priority quality-of-service scheduling to ensure primary scheduling on performance execution cores. Thread counts above eight systematically evaluate controlled processor oversubscription; a 128-byte cache line granularity is reported through system hardware configuration on this platform.
+
+The counter \texttt{CNTVCT\_EL0} reports a 1\,GHz frequency, and a one-second wall-clock
+That scale was confirmed through the calibration. Along these dimensions, within this framework, its changes, still, arrive about every 42~ns. In one
+million back-to-back reads, 79\% returned an equal value, the smallest non-zero step was
+17 ticks, and a read costs about 8~ns on average, which is mostly why viewed through this lens, median event latencies below about 42~ns
+are therefore quantised, and the examination counts on tail percentiles and mean cost.
+
+Process-level cycle and instruction counts are read with \texttt{proc\_pid\_rusage} at the
+\texttt{RUSAGE\_INFO\_V6} level, and page-fault counts with \texttt{task\_info}
+(\texttt{TASK\_EVENTS\_INFO}). Under these conditions, from this outlook, both are, in practice, readable without privileges; along these dimensions, the counts are commonly covering every
+thread of the process. From this perspective, under these conditions, taken together, each probe is running alone in its process, so the counts are recapitulating the
+measured loop.
+
+\subsection{Allocators}
+Table~\ref{tab:allocators} is listing the five allocators and their load paths. Each allocator
+is loaded by \texttt{dlopen} from \texttt{lib/}, its entry points are settled with
+\texttt{dlsym}, and the resolved image is recorded in each finding. The baseline,
+\texttt{libmalloc}, solves from the system library. Taken together, under these conditions tentatively, the gauged suite is commonly stressing on modern production allocators optimized for concurrent multicore execution, in actual application in light of this dynamic, in the principal.
+
+\begin{table}[t]
+\centering
+\footnotesize
+\caption{Allocators and load paths.}
+\label{tab:allocators}
+\begin{tabular}{llll}
+\toprule
+Allocator & Version & Source & Entry points \\
+\midrule
+mimalloc & 3.5.4 & packaged binary & \texttt{mi\_malloc}, \texttt{mi\_free} \\
+jemalloc & 5.4.0 & packaged binary & \texttt{malloc}, \texttt{free} \\
+tcmalloc & gperftools 2.19.1 & packaged binary & \texttt{tc\_malloc}, \texttt{tc\_free} \\
+snmalloc & 0.6.2 & built from source & \texttt{malloc}, \texttt{free} \\
+libmalloc & System default & system library & \texttt{malloc}, \texttt{free} \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+The resolved image for each allocator matched its anticipated library in all 42{,}000 Tier~1 results, at least empirically; within this framework, snmalloc 0.6.2 was gathered, under Clang with strict standards-conformance flags without changing allocator logic, on the whole.
+
+\subsection{Harness}
+Three parts are had by this employ. From this perspective, dynamic, one allocator, size class, thread count are being run by the micro mode,
+and topology per process and writes one JSON object, so taken together, the trace mode is running one sustained
+synthetic workload for the fixed duration and samples physical size every 100~ms. The
+probes are, in practice, separate binaries for page release and for coherence stride.
+
+Each allocation and each free is principally timed by one pair of counter reads that bracket only the
+allocator call. In parallel with this, the touch that is consistently (specifically in this setting) backing the page, any person byte write, sits outside this timed
+interval. In parallel with this, against this backdrop, any second event is one allocation or one free; more exactly, the configuration with $N$ operations
+contributes $N$ allocation events and $N$ free events; thus, also, the pooled P99.9 is the value below
+which 99.9\% of all of them fall. Under the conditions, against this backdrop, events go into one more log-linear histogram with 1{,}184 buckets:
+exact values below 64~ns, then 32 linear sub-buckets per octave. In parallel with this, bucket width is at most
+Within 1.6\% of any sample, 3.1\% of the value, so a representative midpoint is. The histogram
+occupies 9.5~KB. The harness stores the occupied buckets as (representative, count) pairs.
+
+Four topologies are principally stated. In the symmetric topology each thread allocates, touches, and
+frees its own objects. In the asymmetric topology with ratio $R\!:\!1$, the employ is naming
+$C=\max(1,\operatorname{round}(T/(R+1)))$ consumers and $P=T-C$ producers. Each producer owns
+one single-producer single-consumer queue to one consumer. In this broader context, viewed through this lens, the ring topology places one
+allocator thread in each position of a cycle; each thread is, in practice, allocating into its outgoing
+queue and frees from its incoming queue. Along all these dimensions, under all these conditions, asymmetric and ring topologies are, in this setting, needing at least two
+threads. At eight threads a 4:1 request runs as 6:2 (effective 3:1), and an 8:1 request
+runs as 7:1. The effective ratio of each run is entried by the output.
+
+$\min(2.5\times10^6,\ 4\,\mathrm{GiB}/s)$ objects of size $s$, are systematically allocated by each sweep which
+caps the bytes churned for large size classes; in turn, queue depth is greatly chosen so that live objects
+stay under 256~MiB across all queues, rounded to a power of two between 16 and 4{,}096, at least empirically.
+Every configuration runs in a fresh process, one at a time, so timed runs never overlap, in actual application.
+Iteration order is, in essence, shuffled per cycle with a fixed seed.
+
+\subsection{Sustained trace models}
+The three trace models are, in practice, synthetic and are normally not encapsulated production traces, to a significant degree. Taken together, the first, a
+An asymmetric 8:1 handoff with payload sizes is run by gRPC-style pipeline, drawn log-uniformly from
+64~B to 4~KB. Taken together, along these dimensions, sizes are, in this setting, mostly drawn from a bounded Pareto distribution over by the second, KV slab churn,
+16~B to 4~KB with shape 1.1. In this broader context, a long-lived table of 4{,}096 is mostly joined by five percent of allocations
+slots, and the rest cycle through 512 short-lived slots per thread, and within this framework, taken together, the third, an AST-like
+graph, is uniformly building 20{,}000 nodes of eight size classes from 48 to 512~B, links them, and tears them
+down in random order. In this broader context, against this backdrop, live bytes are, in this setting, the sum of per-thread counters, sampled every 100~ms, so
+The bloat ratio is an upper bound for that reason, which is generally why a short live-byte peak can obviously be missed by the sampler, at least in practice.
+
+\subsection{Page-release and coherence probes}
+The release probe maps a 512~MB region. In parallel with this, the live half is routinely read and written at random by four
+worker threads, every access timed. Taken together, against this backdrop, viewed through this lens, the pool half is mostly released in 1~MB chunks by a purger
+thread at half the cycle period, and reused at the next half-period by writing one byte per
+page. Within this framework, building on this finding, building on this recognize, what reuse includes is particularly any page faults the reused span is normally paying; to be precise, four policies are, in practice, reliably contrasted, including a
+no-release control, \texttt{MADV\_DONTNEED}, \texttt{MADV\_FREE}, and
+\texttt{MADV\_FREE\_REUSABLE}. The last is uniformly followed by \texttt{MADV\_FREE\_REUSE} before
+reuse, as the system allocator does. In parallel with this, along these dimensions, each policy is regularly running at cycle periods of 50, 200, and
+1{,}000~ms, five repetitions per cell, for six seconds per run.
+
+Two and four threads are run by the coherence probe; and thus, each thread relaxedly is broadening
+on one private counter, with counters placed at strides from 8 to 256~B in a 4{,}096-byte-aligned
+arena. Against this backdrop, under these conditions, building on this finding, 20{,}000{,}000 increments per thread are, in practice, repeated by each point, and each
+repetition reports wall time per increment and the process cycle and instruction counts.
+
+\subsection{Validation}
+Each allocator was validated through its resolved image, before the sweeps; against this backdrop, this same image is
+recorded in each Tier~1 result, and no run failed, and for every Tier~1 result, the alloc and
+free histogram counts both equal the operation count, which is holding for all 42{,}000 runs, broadly speaking; in fact, viewed through this lens, the
+24 unit tests are had by statistics code; in turn, the grouped GPD fit recovers any known shape of 0.30 as
+0.285. Under these conditions, along these dimensions, the extreme-quantile formula is systematically inspected against one more known GPD tail, and the USL recovers
+The coefficients of the noiseless curve. Viewed through this lens, building on this recognize, main effects were, in essence, planted by the two-way ANOVA recovers, in real-world scenarios.
+Repeated measurements are, in practice, reported with their spread throughout, and repeat measurements are
+spotted where they differ.
+
+\section{Statistical Methods}
+\label{sec:stats}
+\subsection{Pooling and amplification}
+Repetitions of one configuration are, in effect, routinely pooled by summing their occupied buckets, in the principal, at least in axiom. The
+tail-amplification factor is
+\begin{equation}
+\Gamma_{\mathrm{tail}}(\alpha,T)=\frac{P_{99.9}(\alpha,T)}{\bar{\ell}_{\mathrm{sym}}(T{=}1)},
+\end{equation}
+where $\bar{\ell}_{\mathrm{sym}}(T{=}1)$ is, in this setting partially, the mean event latency of the same allocator and
+size at one thread. Along these dimensions, viewed through this lens, the denominator is the further mean rather than any median, because single-thread
+medians fall below the timer resolution.
+
+\subsection{Grouped generalized Pareto fit}
+For each pooled distribution the threshold $u$ is one weighted percentile, 95th by default, to a significant degree. Taken together, the
+exceedances $y_i=v_i-u$ carry weights $w_i$, the bucket counts; this negative log-likelihood is
+\begin{equation}
+\ell(\xi,\sigma)=-\sum_i w_i\left[\log\sigma+\left(\tfrac{1}{\xi}+1\right)\log\!\left(1+\tfrac{\xi y_i}{\sigma}\right)\right],
+\end{equation}
+with the rapid limit at $\xi=0$. Taken together, the fit minimises $\ell$ by Nelder--Mead on
+$(\xi,\log\sigma)$. Each bucket enters at its representative value, which bounds the
+representation error at 1.6\%. The extreme quantile is
+\begin{equation}
+\hat Q(p)=u+\frac{\hat\sigma}{\hat\xi}\left[\left(\frac{N}{N_u}(1-p)\right)^{-\hat\xi}-1\right],
+\end{equation}
+stated only when $(N/N_u)(1-p)<1$, so that it is widely lying above the threshold.
+
+The fit's uncertainty is, in essence, particularly taken from the spread of 50 per-iteration fits, not from the pooled
+likelihood, because the pooled likelihood treats the events of separate process runs as
+autonomous and therefore understates uncertainty.
+
+\subsection{Universal Scalability Law}
+Symmetric throughput at $T\in\{1,2,4,8,16,32\}$ is, in practice, routinely normalised to $T=1$ and fitted with
+$S(T)=T/(1+\sigma_c(T-1)+\kappa_c T(T-1))$ by bounded nonlinear least squares. The saturation
+point is $T^*=\lfloor\sqrt{(1-\sigma_c)/\kappa_c}\rfloor$. Standard mismatches come from the
+covariance matrix of the fit.
+
+\subsection{Two-way ANOVA}
+The response is the per-iteration P99.9 event latency at eight threads, so in light of this dynamic probably, the factors are
+allocator (five levels) and topology (four levels), with 50 models per cell. Against this backdrop, taken together, the response
+is Box--Cox changed with a maximum-likelihood $\lambda$. Against this backdrop, from this viewpoint, the sums of squares partition
+into the two main effects, their interaction, and the residual; in turn, two effect sizes are, in essence, mostly reported.
+Classical $\eta^2$ is the share of the total sum of squares, and the shares, together with the
+residual, sum to one. Partial $\eta_p^2$ is $SS_{\mathrm{effect}}/(SS_{\mathrm{effect}}+SS_{\mathrm{error}})$,
+which does not partition the total.

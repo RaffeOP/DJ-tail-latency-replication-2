@@ -1,0 +1,23 @@
+\begin{table}[!htbp]
+\centering
+\footnotesize
+\setlength{\tabcolsep}{3pt}
+\caption{Universal Scalability Law fits to symmetric throughput, $S(T)=\Lambda(T)/\Lambda(1)$, threads 1--32.}
+\label{tab:usl}
+\begin{tabular}{llrrrr}
+\toprule
+Size (B) & Allocator & $\sigma_c$ (95\% CI) & $\kappa_c$ (95\% CI) & $T^*$ & $R^2$\\
+\midrule
+64 & mimalloc & 0.1016 $\pm$ 0.0159 & 0.00218 $\pm$ 0.00070 & 20 & 0.995 \\
+64 & jemalloc & 0.0808 $\pm$ 0.0310 & 0.00205 $\pm$ 0.00134 & 21 & 0.978 \\
+64 & tcmalloc & 0.0994 $\pm$ 0.0176 & 0.00141 $\pm$ 0.00073 & 25 & 0.994 \\
+64 & snmalloc & 0.0499 $\pm$ 0.0323 & 0.00386 $\pm$ 0.00161 & 15 & 0.972 \\
+64 & libmalloc & 0.0678 $\pm$ 0.0260 & 0.00289 $\pm$ 0.00120 & 17 & 0.984 \\
+4096 & mimalloc & 0.0928 $\pm$ 0.0362 & 0.00173 $\pm$ 0.00154 & 22 & 0.972 \\
+4096 & jemalloc & 0.1051 $\pm$ 0.0368 & 0.00151 $\pm$ 0.00155 & 24 & 0.973 \\
+4096 & tcmalloc & 0.1161 $\pm$ 0.0209 & 0.00097 $\pm$ 0.00085 & 30 & 0.992 \\
+4096 & snmalloc & 0.0811 $\pm$ 0.0371 & 0.00502 $\pm$ 0.00201 & 13 & 0.970 \\
+4096 & libmalloc & 0.1641 $\pm$ 0.0497 & 0.00269 $\pm$ 0.00234 & 17 & 0.957 \\
+\bottomrule
+\end{tabular}
+\end{table}

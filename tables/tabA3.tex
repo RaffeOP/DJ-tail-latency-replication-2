@@ -1,0 +1,21 @@
+\begin{table}[!htbp]
+\centering
+\footnotesize
+\setlength{\tabcolsep}{3pt}
+\caption{Pooled P99.9 event latency (ns) at 8 threads under 8:1 handoff, all eight size classes. Each cell pools allocation and free events over 50 iterations.}
+\label{tab:atlas-8to1}
+\begin{tabular}{rrrrrr}
+\toprule
+Size (B) & mimalloc & jemalloc & tcmalloc & snmalloc & libmalloc \\
+\midrule
+16 & 210 & 2{,}976 & 1{,}552 & 664 & 332 \\
+64 & 250 & 2{,}976 & 1{,}456 & 1{,}040 & 792 \\
+256 & 1{,}808 & 2{,}272 & 1{,}680 & 1{,}136 & 2{,}080 \\
+1024 & 1{,}744 & 1{,}488 & 2{,}144 & 1{,}360 & 3{,}104 \\
+4096 & 6{,}848 & 5{,}440 & 3{,}808 & 4{,}928 & 10{,}624 \\
+16384 & 10{,}624 & 17{,}664 & 80{,}896 & 26{,}880 & 24{,}320 \\
+65536 & 11{,}136 & 11{,}904 & 80{,}896 & 15{,}744 & 9{,}088 \\
+262144 & 11{,}136 & 12{,}672 & 1{,}196{,}032 & 16{,}000 & 14{,}464 \\
+\bottomrule
+\end{tabular}
+\end{table}

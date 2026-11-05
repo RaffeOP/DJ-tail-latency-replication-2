@@ -1,0 +1,45 @@
+\begin{table}[!htbp]
+\centering
+\scriptsize
+\setlength{\tabcolsep}{3pt}
+\caption{Box-Cox two-way parametric ANOVA on per-iteration P99.9 event latency at 8 threads, all eight size classes. Factors are allocator (5 levels) and topology (4 levels), 50 replicates per cell. The Box-Cox parameter $\hat{\lambda}$ is fitted per size class.}
+\label{tab:anova-all}
+\begin{tabular}{llrrrrrr}
+\toprule
+Size (B) & Source & df & $F$ & $p$ & $\eta^2$ & $\eta_p^2$ & $\hat{\lambda}$\\
+\midrule
+16 & allocator & 4 & 2581.03 & $<10^{-300}$ & 0.256 & 0.913 & 0.030 \\
+16 & topology & 3 & 6626.17 & $<10^{-300}$ & 0.493 & 0.953 & 0.030 \\
+16 & allocator x topology & 12 & 764.95 & $<10^{-300}$ & 0.227 & 0.904 & 0.030 \\
+16 & Residual & 980 & -- & -- & 0.024 & -- & -- \\
+64 & allocator & 4 & 1231.08 & $<10^{-300}$ & 0.186 & 0.834 & 0.213 \\
+64 & topology & 3 & 5515.03 & $<10^{-300}$ & 0.625 & 0.944 & 0.213 \\
+64 & allocator x topology & 12 & 335.74 & $<10^{-300}$ & 0.152 & 0.804 & 0.213 \\
+64 & Residual & 980 & -- & -- & 0.037 & -- & -- \\
+256 & allocator & 4 & 513.42 & 1.1e-238 & 0.078 & 0.677 & 0.606 \\
+256 & topology & 3 & 7213.41 & $<10^{-300}$ & 0.821 & 0.957 & 0.606 \\
+256 & allocator x topology & 12 & 141.43 & 3.5e-204 & 0.064 & 0.634 & 0.606 \\
+256 & Residual & 980 & -- & -- & 0.037 & -- & -- \\
+1024 & allocator & 4 & 989.30 & $<10^{-300}$ & 0.145 & 0.802 & 0.452 \\
+1024 & topology & 3 & 6810.34 & $<10^{-300}$ & 0.748 & 0.954 & 0.452 \\
+1024 & allocator x topology & 12 & 163.28 & 5.8e-224 & 0.072 & 0.667 & 0.452 \\
+1024 & Residual & 980 & -- & -- & 0.036 & -- & -- \\
+4096 & allocator & 4 & 612.25 & 1e-264 & 0.115 & 0.714 & 0.370 \\
+4096 & topology & 3 & 5659.12 & $<10^{-300}$ & 0.797 & 0.945 & 0.370 \\
+4096 & allocator x topology & 12 & 73.52 & 1.4e-127 & 0.041 & 0.474 & 0.370 \\
+4096 & Residual & 980 & -- & -- & 0.046 & -- & -- \\
+16384 & allocator & 4 & 61.25 & 3.2e-46 & 0.034 & 0.200 & 0.139 \\
+16384 & topology & 3 & 1844.87 & $<10^{-300}$ & 0.774 & 0.850 & 0.139 \\
+16384 & allocator x topology & 12 & 32.97 & 3.4e-64 & 0.055 & 0.288 & 0.139 \\
+16384 & Residual & 980 & -- & -- & 0.137 & -- & -- \\
+65536 & allocator & 4 & 155.76 & 3.6e-103 & 0.153 & 0.389 & 0.105 \\
+65536 & topology & 3 & 434.35 & 2e-179 & 0.319 & 0.571 & 0.105 \\
+65536 & allocator x topology & 12 & 97.87 & 2.8e-158 & 0.288 & 0.545 & 0.105 \\
+65536 & Residual & 980 & -- & -- & 0.240 & -- & -- \\
+262144 & allocator & 4 & 364.76 & 2.7e-192 & 0.195 & 0.598 & -0.026 \\
+262144 & topology & 3 & 872.79 & 3.4e-276 & 0.351 & 0.728 & -0.026 \\
+262144 & allocator x topology & 12 & 200.90 & 3.1e-254 & 0.323 & 0.711 & -0.026 \\
+262144 & Residual & 980 & -- & -- & 0.131 & -- & -- \\
+\bottomrule
+\end{tabular}
+\end{table}

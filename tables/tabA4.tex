@@ -1,0 +1,21 @@
+\begin{table}[!htbp]
+\centering
+\footnotesize
+\setlength{\tabcolsep}{3pt}
+\caption{Pooled P99.9 event latency (ns) at 8 threads under ring handoff, all eight size classes. Each cell pools allocation and free events over 50 iterations.}
+\label{tab:atlas-ring}
+\begin{tabular}{rrrrrr}
+\toprule
+Size (B) & mimalloc & jemalloc & tcmalloc & snmalloc & libmalloc \\
+\midrule
+16 & 292 & 872 & 372 & 125 & 372 \\
+64 & 460 & 1{,}136 & 372 & 1{,}040 & 372 \\
+256 & 1{,}552 & 1{,}296 & 420 & 952 & 1{,}136 \\
+1024 & 1{,}744 & 1{,}168 & 872 & 1{,}552 & 2{,}144 \\
+4096 & 2{,}976 & 2{,}272 & 2{,}656 & 3{,}232 & 4{,}928 \\
+16384 & 6{,}976 & 11{,}392 & 6{,}976 & 22{,}272 & 7{,}360 \\
+65536 & 7{,}616 & 9{,}088 & 10{,}624 & 21{,}760 & 36{,}352 \\
+262144 & 9{,}600 & 11{,}904 & 1{,}392{,}640 & 26{,}368 & 39{,}424 \\
+\bottomrule
+\end{tabular}
+\end{table}

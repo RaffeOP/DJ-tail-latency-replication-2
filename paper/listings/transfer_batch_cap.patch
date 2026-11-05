@@ -1,0 +1,20 @@
+--- a/src/common.cc	2026-10-23 11:26:41
++++ b/src/common.cc	2026-10-23 16:20:33
+@@ -52,7 +52,7 @@
+ // thread and central caches.
+ static int32_t FLAGS_tcmalloc_transfer_num_objects;
+ 
+-static constexpr int32_t kDefaultTransferNumObjecs = 32;
++static constexpr int32_t kDefaultTransferNumObjecs = 256;  // R2 ablation
+ 
+ // The init function is provided to explicit initialize the variable value
+ // from the env. var to avoid C++ global construction that might defer its
+@@ -105,7 +105,7 @@
+ int SizeMap::NumMoveSize(size_t size) {
+   if (size == 0) return 0;
+   // Use approx 64k transfers between thread and central caches.
+-  int num = static_cast<int>(64.0 * 1024.0 / size);
++  int num = static_cast<int>(1024.0 * 1024.0 / size);  // R2 ablation: 16x larger transfer batch
+   if (num < 2) num = 2;
+ 
+   // Avoid bringing too many objects into small object free lists.

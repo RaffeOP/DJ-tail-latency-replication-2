@@ -1,0 +1,9 @@
+{
+  "note": "First ablation session, run inline before the script existed. Values transcribed from the console output of that session; the raw harness JSON was not saved to a file.",
+  "rows": [
+    {"size_bytes": 16384, "budget": "default", "alloc_p99_9_us": [532.5, 495.6, 430.1], "free_p99_9_us": [5.1, 5.2, 15.2], "mops": [0.43, 0.45, 0.66]},
+    {"size_bytes": 16384, "budget": "big_cache", "alloc_p99_9_us": [761.9, 598.0, 565.2], "free_p99_9_us": [25.9, 14.7, 8.6], "mops": [0.42, 0.48, 0.49]},
+    {"size_bytes": 262144, "budget": "default", "alloc_p99_9_us": [10092.5, 10092.5, 2080.8], "free_p99_9_us": [8781.8, 307.2, 107.5], "mops": [0.08, 0.13, 0.25]},
+    {"size_bytes": 262144, "budget": "big_cache", "alloc_p99_9_us": [1294.3, 1065.0, 1228.8], "free_p99_9_us": [99.3, 72.7, 512.0], "mops": [0.57, 0.80, 0.34]}
+  ]
+}

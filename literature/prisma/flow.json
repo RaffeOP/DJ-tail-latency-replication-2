@@ -1,0 +1,27 @@
+{
+  "queries": 13,
+  "from_date": "2024-01-01",
+  "records_returned": 3643,
+  "records_after_doi_deduplication": 3065,
+  "records_excluded_non_peer_reviewed_publisher": 2693,
+  "records_excluded_off_topic": 280,
+  "records_passing_publisher_and_topic_screen": 92,
+  "records_core_title_relevance": 9,
+  "records_adjacent_title_relevance": 55,
+  "records_off_topic_after_title_check": 28,
+  "returned_per_query": {
+    "memory allocator": 300,
+    "malloc implementation performance": 300,
+    "heap allocator multithreaded": 300,
+    "remote free producer consumer allocation": 300,
+    "false sharing cache line": 300,
+    "cache coherence atomic contention": 300,
+    "TLB shootdown": 43,
+    "page reclamation madvise memory footprint": 300,
+    "allocator fragmentation": 300,
+    "tail latency memory allocation": 300,
+    "garbage collection allocation tail latency": 300,
+    "universal scalability law": 300,
+    "extreme value theory latency tail": 300
+  }
+}

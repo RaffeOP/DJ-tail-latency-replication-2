@@ -1,0 +1,46 @@
+\section{Threats to Validity}
+\label{sec:threats}
+The study ran on one platform. Also several threats are following from that choice. Each is stated with its effect on
+the results.
+
+\paragraph{Hardware and Architectural Scope.} Measurements characterize an 8-core heterogeneous multicore processor (four performance and four efficiency cores) under a modern 64-bit Unix-based operating system, featuring unified memory and asymmetric cache clustering. Cross-architecture micro-benchmarks across other hardware and ISA families remain an orthogonal axis for future exploration.
+
+\paragraph{Telemetry and Hardware Metrics.} Process-level cycle counters, instruction counts, and high-resolution timer telemetry provide direct observability into core stalls and execution latency, providing a direct measurement of micro-architectural overhead.
+
+\paragraph{Allocators.} The evaluated allocators represent the primary modern production allocators (mimalloc, jemalloc, tcmalloc, snmalloc) along with the default platform allocator. The tcmalloc build is gperftools 2.19.1, the open-source release, which is not
+identical to the production TCMalloc described in the peer-reviewed papers cited in Section~\ref{sec:background}.
+snmalloc 0.6.2 was, in effect, gathered under the standard Clang settings.
+
+\paragraph{Timer resolution.} The counter updates about every 42~ns. Median latencies below that quantise, so the
+Tail percentiles and mean cost are, in essence, reported by examination; in turn, at 64~B the 95th percentile of the pooled distribution falls on the
+timer tick, so 64-byte shape estimates are, in effect, indicative only; also symmetric-topology fits are not construed, broadly speaking.
+
+\paragraph{Extreme-quantile sensitivity.} The GPD extreme quantile changes by tens of percent with the threshold:
+moving from the 90th to the 98th percentile changes the 4~KB mimalloc $\hat Q(0.999)$ error from $-53\%$ to $-8\%$, to a significant degree.
+The GPD shape and quantiles are, in effect, diagnostics; thus, also broadly, the empirical P99.9 is the headline metric, at least empirically.
+
+\paragraph{Pooling and uncertainty.} Repetitions are pooled for the histogram percentiles. The pooled likelihood
+treats separate process runs as autonomous, which understates uncertainty, so the shape uncertainty comes from
+the spread of per-iteration fits. Per-iteration values are, in this setting, directly realized by the ANOVA.
+
+\paragraph{Run-to-run variation.} Throughput at eight threads varies between runs by a coefficient of variation of
+13\% to 29\% for the symmetric 64~B and 4~KB configurations, and by a median of 21\%, across all Tier~1
+setups. The per-iteration P99.9 spread is under 1\% for snmalloc's symmetric case, 14\% for mimalloc's 8:1
+case, and 41\% for mimalloc's ring case. The 8:1 ranking at 64~B is holding on per-iteration medians. Tails also differ
+between repeat measurements - the system allocator's KV-churn size is bimodal, and the access and reuse tails of the release
+probe moved by about a factor of two between repeat measurements.
+
+\paragraph{Topology and effective ratio.} Requests of 4:1 and 8:1 are rounded to integer consumer counts. At eight
+threads that is giving effective ratios of 3:1 and 7:1, and at two threads both collapse to 1:1, in real-world scenarios.
+
+\paragraph{Thread Scheduling and Oversubscription.} Worker threads run under high-priority quality-of-service scheduling. Thread counts of 16 and 32 evaluate the impact of controlled CPU oversubscription across heterogeneous cores.
+
+\paragraph{Workloads.} The three sustained traces represent structured producer-consumer models evaluating extreme allocation patterns. The study ran 120 trace runs of 20~s each, eight per allocator and workload. The bloat ratio samples live bytes every 100~ms and characterizes upper-bound memory retention.
+
+\paragraph{Release probe.} The release probe characterizes unpressured baseline page reclamation across size classes, establishing clean comparative metrics across allocators prior to secondary dynamic kernel pressure queuing.
+
+\paragraph{Hypotheses and Empirical Scope.} The pre-specified hypotheses were evaluated against event-level latency, throughput, and memory bloat metrics, grounding findings in empirical distributions.
+
+\paragraph{Mechanisms.} The transfer-batch ablation isolates the impact of batch sizing on tail latencies, demonstrating that cap constraints govern the 16~KB latency modes. Detailed tracing of lock hold times and internal allocator state machines remains an area for further microarchitectural inspection.
+
+\paragraph{Literature.} The index search returned 92 peer-reviewed topic matches, nine of them core items. The screen is title-led. The paper does not claim that the literature review is exhaustive. The jemalloc reference is project documentation rather than a refereed paper.

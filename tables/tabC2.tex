@@ -1,0 +1,25 @@
+\begin{table}[!htbp]
+\centering
+\scriptsize
+\setlength{\tabcolsep}{3pt}
+\caption{Page-release probe on 8-core heterogeneous hardware under Unix-based OS. Min and mean are footprints in MB, means over five repetitions. Access latencies are in ns, purge latency in $\mu$s; those values and faults are medians.}
+\label{tab:purge}
+\begin{tabular}{llrrrrrr}
+\toprule
+Advice & \shortstack{Period\\(ms)} & \shortstack{Min\\(MB)} & \shortstack{Mean\\(MB)} & \shortstack{Access\\P99.9} & \shortstack{Access\\P99.99} & \shortstack{Purge\\P99.9} & \shortstack{Faults\\(median)}\\
+\midrule
+No release & 50 & 513.3 & 513.3 & 460 & 9856 & 0.0 & 49 \\
+No release & 200 & 513.3 & 513.3 & 436 & 11904 & 0.0 & 43 \\
+No release & 1000 & 513.3 & 513.3 & 420 & 10624 & 0.0 & 47 \\
+DONTNEED & 50 & 513.3 & 513.3 & 420 & 7872 & 119.8 & 2728 \\
+DONTNEED & 200 & 513.3 & 513.3 & 460 & 14976 & 119.8 & 35149 \\
+DONTNEED & 1000 & 513.3 & 513.3 & 500 & 15488 & 48.6 & 27641 \\
+FREE & 50 & 507.5 & 513.3 & 500 & 11136 & 340.0 & 944 \\
+FREE & 200 & 486.7 & 511.7 & 460 & 16256 & 121.9 & 10082 \\
+FREE & 1000 & 449.2 & 504.2 & 460 & 11648 & 49.7 & 32738 \\
+FREE\_REUSABLE & 50 & 257.3 & 385.6 & 460 & 14976 & 117.8 & 8077 \\
+FREE\_REUSABLE & 200 & 257.3 & 384.0 & 460 & 11648 & 198.7 & 10256 \\
+FREE\_REUSABLE & 1000 & 257.3 & 387.6 & 460 & 10368 & 76.8 & 13182 \\
+\bottomrule
+\end{tabular}
+\end{table}

@@ -1,0 +1,224 @@
+\documentclass[pdflatex,sn-mathphys-num]{sn-jnl}
+
+\usepackage{amsmath,amssymb,amsfonts}
+\usepackage{graphicx}
+\graphicspath{{figures/}{../figures/}{./}}
+\usepackage{booktabs}
+\usepackage{array}
+\usepackage{microtype}
+
+\usepackage{url}
+\usepackage{listings}
+
+\raggedbottom
+
+\begin{document}
+
+\title[Tail-Latency Amplification in Concurrent Memory Allocators]{Tail-Latency Amplification Under Cross-Thread Handoff, Coherence Granularity, and Page-Release Footprint in Concurrent Memory Allocators}
+
+\author[1]{\fnm{Devarsh} \sur{Patel}}\email{devarsh.patel2024@vitstudent.ac.in}
+\author[1]{\fnm{Adarsh} \sur{Singh}}\email{adarsh.singh2024b@vitstudent.ac.in}
+\author*[1]{\fnm{Deepika} \sur{J}}\email{deepika.j@vit.ac.in}
+
+\affil*[1]{\orgdiv{School of Computer Science and Engineering (SCOPE)}, \orgname{Vellore Institute of Technology (VIT)}, \orgaddress{\city{Vellore}, \postcode{632014}, \state{Tamil Nadu}, \country{India}}}
+
+\abstract{%
+In concurrent systems, allocation-intensive services frequently transfer memory objects across execution threads, whereby cross-thread deallocation (the remote-free path) critically governs tail latency. Conventional benchmarking suites, however, predominantly report aggregate throughput under symmetric workloads, thereby obscuring substantial tail-latency amplification. This paper presents a systematic empirical investigation of event-level latency across five contemporary memory allocators (mimalloc~3.5.4, jemalloc~5.4.0, gperftools tcmalloc~2.19.1, snmalloc~0.6.2, and system default \texttt{libmalloc}) deployed on an 8-core heterogeneous multicore processor (four performance and four efficiency cores) running a modern 64-bit Unix-based operating system. Latency profiles were examined across symmetric, 4{:}1, 8{:}1, and ring producer--consumer handoff topologies over 42{,}000 sweeps (50 iterations per configuration) without experimental failure. The findings indicate that at eight threads and 64-byte allocations, P99.9 event latency increases from 42--250~ns under symmetric execution to 250--2{,}976~ns under 8{:}1 handoff, representing an amplification factor of 22 to 175 relative to single-thread mean costs. Crucially, producer-side and consumer-side tail latencies follow distinct execution paths across allocators, altering relative allocator rankings across object size classes. Beyond 16~KB, tcmalloc exhibits a pronounced slow mode with tail latencies spanning hundreds of microseconds to milliseconds; applying reusable lazy-purging advice (\texttt{MADV\_FREE\_REUSABLE}) halves this latency. Furthermore, within the host Unix virtual memory subsystem, neither \texttt{MADV\_DONTNEED} nor standard \texttt{MADV\_FREE} reduces physical memory footprint in the absence of systemwide memory pressure. Dedicated hardware coherence probing reveals that atomic write penalties step abruptly at a 64-byte cache-line stride, driven by processor cycles while instruction counts remain invariant. While expanding the thread-cache budget yields no median latency improvement, increasing the transfer-batch cap in a patched source build effectively eliminates the 16~KB latency degradation. Of five pre-registered hypotheses, empirical support is confirmed for qualitative remote-free ordering at 64~B (H1) and memory bloat exceeding 2.4 under key-value churn (H3), whereas predictions regarding false-sharing overheads (H2), immediate physical memory reclamation (H4), and core saturation horizons (H5) fail to hold. These findings characterise the critical interplay between asymmetric hardware coherence fabrics, operating system memory management semantics, and allocator design in governing tail latency under concurrent execution.
+}
+
+\keywords{Memory allocators, tail latency, producer-consumer handoff, cache coherence, page release, extreme value theory, scalability}
+
+\maketitle
+
+\renewcommand{\topfraction}{0.90}
+\renewcommand{\bottomfraction}{0.85}
+\renewcommand{\textfraction}{0.08}
+\renewcommand{\floatpagefraction}{0.75}
+\setcounter{topnumber}{4}
+\setcounter{bottomnumber}{4}
+\setcounter{totalnumber}{8}
+
+\input{sections/01_introduction.tex}
+\input{sections/02_methods.tex}
+\input{sections/03_results.tex}
+\input{sections/04_discussion.tex}
+\input{sections/05_guidelines.tex}
+\input{sections/06_threats.tex}
+\input{sections/07_reproducibility.tex}
+\input{sections/08_conclusion.tex}
+
+\backmatter
+
+\clearpage
+
+\section*{Declarations}
+
+\bmhead{Funding}
+
+The author is declaring that no funds, grants, or other financial support were received during the preparation of this manuscript, in real-world scenarios.
+
+\bmhead{Competing interests}
+
+The author is declaring no known competing financial or non-financial interests that could have appeared to impact the work reported in this inquiry, broadly speaking.
+
+\bmhead{Ethics approval and consent to participate}
+
+Not applicable; the put forward inquiry consists only of computational systems benchmarking on commodity processor hardware and does not entail human participants, human data, human tissue, or animal subjects, at least for now.
+
+\bmhead{Consent for publication}
+
+Not applicable.
+
+\bmhead{Data availability}
+
+The raw micro-sweep histograms, the sustained trace logs, and the hardware probe measurements created and evaluated during the current study are available in the GitHub replication repository at \url{https://github.com/RaffeOP/DJ-tail-latency-replication-2}.
+
+\bmhead{Materials availability}
+
+Not applicable.
+
+\bmhead{Code availability}
+
+The C++17 benchmark implementation, allocator dynamic-loading shims, source-level \texttt{gperftools} patch scripts and coherence, page-release probes, and Python statistical verification and plotting pipelines are available under the MIT License at \url{https://github.com/RaffeOP/DJ-tail-latency-replication-2}.
+
+\bmhead{Author contribution}
+
+Devarsh Patel and Adarsh Singh conceived and designed the study, realized the C++17 benchmarking implementation and the kernel and hardware probes, experimentally swept and source-level allocator ablations, statistically modeled and validated results, created all visualizations, and wrote and revised the manuscript. Deepika J supervised the research, critically reviewed and edited the manuscript, and validated the experimental methodology and analytical findings.
+
+\clearpage
+
+\begin{appendices}
+\renewcommand{\theHtable}{app.\arabic{table}}
+
+\section{Tier 1 atlas}\label{appA}
+
+Tables~\ref{tab:atlas-symmetric} to~\ref{tab:atlas-p9999} are giving pooled event-latency percentiles for every size class at eight threads, broadly speaking; and thus, the values are, in essence, percentiles of the pooled distribution, not medians of per-iteration percentiles; the per-iteration spread is in Table~\ref{tab:uncertainty}, to a significant degree. Read across a row to compare allocators at one size class and down a column to see how one allocator's tail changes with object size, at least in law; more correctly, each cell pools the allocation and free histograms of all 50 cycles, to a significant degree.
+
+Tables~\ref{tab:producer-consumer-8to1} and~\ref{tab:producer-consumer-4to1-ring} split each handoff tail into its producer-side allocation path and its consumer-side remote-free path, broadly speaking; the pooled P99.9 is a percentile of the combined histogram, so it is not the sum or the maximum of the two parts; it can lie between them or above both, at least in principle, on the whole. Table~\ref{tab:throughput-bandwidth} reports throughput and payload bandwidth for the four topologies; more exactly, payload bandwidth multiplies operations per second by the object size and counts each allocation once, so it measures the bytes handed between threads, not the memory traffic of the allocator's metadata, in the primary, at least in practice.
+
+Table~\ref{tab:anova-all} is repeating the Box-Cox two-way ANOVA of Section~\ref{sec:stats} for every size class, and Table~\ref{tab:gpd-sensitivity} is, in this setting, sharing how the grouped GPD estimate moves with the threshold for the two size classes implemented in the principal text, at least in law, broadly speaking.
+
+\clearpage
+
+
+\input{../tables/tabA1.tex}
+% =============================================================================
+
+
+\input{../tables/tabA2.tex}
+% =============================================================================
+
+
+\input{../tables/tabA3.tex}
+% =============================================================================
+
+
+\input{../tables/tabA4.tex}
+% =============================================================================
+
+
+\input{../tables/tabA5.tex}
+% =============================================================================
+
+
+\input{../tables/tabA6.tex}
+% =============================================================================
+
+
+\input{../tables/tabA7.tex}
+% =============================================================================
+
+
+\input{../tables/tabA8.tex}
+% =============================================================================
+
+
+\input{../tables/tabA9.tex}
+% =============================================================================
+
+
+\input{../tables/tabA10.tex}
+% =============================================================================
+
+
+\clearpage
+
+\section{Thread scaling atlas}\label{appB}
+
+Across the thread counts, Tables~\ref{tab:scaling-p999} and~\ref{tab:scaling-throughput} are following four size classes; truly, the 8:1 topology needs at least one producer and one consumer, so its scaling is starting at two threads, in many respects. Its effective producer-to-consumer ratio is not constant across the thread counts (1:1 at two threads, 3:1 at four, and 7:1 from eight upward), so compare allocators at the same thread count rather than adjacent thread counts as if they were the same topology, in many respects. Tables~\ref{tab:scaling-4to1} and~\ref{tab:scaling-ring} are giving the same P99.9 scaling for the 4:1 and ring topologies, across all eight size classes, at least in practice.
+
+Table~\ref{tab:usl-all} gives Universal Scalability Law is fitting to the symmetric speedup of each allocator at each size class, in the central; in the central; more correctly, also thus, the contention coefficient $\sigma_c$ and the coherence coefficient $\kappa_c$ are the fitted factors, $T^*$ is the thread count at which the fitted curve peaks, all things considered. Also $R^2$ is the fit quality over one to thirty-two threads; also thus, fits built from six thread counts outline the curve's shape; read the intervals, before treating any person $T^*$ as a precise value, at least in practice; and thus, at 64~KB and 256~KB, \texttt{libmalloc} throughput peaks at one thread and lessens for every $T \ge 2$, so the USL parameters are not fitted for those two cells; more exactly, also $T^*$ is reported as 1, at least for now.
+
+\clearpage
+
+
+\input{../tables/tabB1.tex}
+% =============================================================================
+
+
+\input{../tables/tabB2.tex}
+% =============================================================================
+
+
+\input{../tables/tabB11.tex}
+% =============================================================================
+
+
+\input{../tables/tabB12.tex}
+% =============================================================================
+
+
+\input{../tables/tabB13.tex}
+% =============================================================================
+
+
+\clearpage
+
+\section{Probe and sustained-trace atlas}\label{appC}
+
+The cycles-per-instruction column is the ratio of the two counters; and thus, table~\ref{tab:stride} is, in effect, giving the time, cycle and instruction counts for each stride at two and four threads, at least empirically.
+
+Table~\ref{tab:purge} reports the page-release probe for each advice mode and cycle period, and read the minimum and mean sizes against the no-release row, and read the access and purge latencies as the cost that each advice mode adds to the worker and to the release call, on the whole. Over eight repetitions, Table~\ref{tab:trace} is giving the sustained workloads as medians; more correctly, the bloat ratio is peak footprint divided by peak live bytes, which is the ratio the primary text applies for footprint bloat, in many respects.
+
+\clearpage
+
+
+\input{../tables/tabC1.tex}
+% =============================================================================
+
+
+\input{../tables/tabC2.tex}
+% =============================================================================
+
+
+\input{../tables/tabC3.tex}
+% =============================================================================
+
+
+\clearpage
+
+\section{Source-level patch and instrumentation listings}\label{appD}
+
+The complete replication package is available at [repository URL to be inserted before submission]. Listing~\ref{lst:patch} is the change realized to the gperftools 2.19.1 source build for the transfer-batch-cap assay in Table~\ref{tab:batchcap}; it raises the default transfer count from 32 to 256 and changes the batch-size limit from 64~KB divided by the object size to 1~MB divided by the object size, and nothing else in the allocator changes, all things considered. The listings below are verbatim copies of the files in the replication package, so the exact code the measurements implemented can, at least in theory, be read without the store, in many respects.
+
+Listing~\ref{lst:hist} is the log-linear histogram. Its constants are exactly bucketing below 64~ns and 32 linear sub-buckets per octave, and $64 + 35 \times 32 = 1{,}184$ buckets in total, which is the bucket count quoted in Section~\ref{sec:platform}, in real-world scenarios, and listing~the process-level cycle, instruction and fault counters employed by the probes are read by \ref{lst:counters}, at least for now. All these counters cover every thread of the process, so a probe must run alone in its process for the counts to be credited to the measured loop, at least empirically, and listing~\ref{lst:spsc} is the single-producer, single-consumer ring employed for the handoff; atomic loads and stores are implemented with no lock and a bounded number of phases by its operations, and a full or empty ring returns promptly, at least in practice.
+
+\lstset{basicstyle=\ttfamily\scriptsize, columns=fullflexible, keepspaces=true, upquote=true, breaklines=true, frame=single, numbers=left, numbersep=4pt, xleftmargin=2em, captionpos=b}
+
+\lstinputlisting[language=C++, caption={Transfer-batch-cap patch to gperftools 2.19.1 (\texttt{scripts/tcmalloc\_source/transfer\_batch\_cap.patch}).}, label=lst:patch]{listings/transfer_batch_cap.patch}
+
+\lstinputlisting[language=C++, firstline=1, lastline=54, caption={Log-linear histogram used by the harness, part 1 (\texttt{src/telemetry/hdr\_histogram.hpp}).}, label=lst:hist]{listings/hdr_histogram.hpp}
+
+\lstinputlisting[language=C++, firstline=55, lastline=107, caption={Log-linear histogram used by the harness, part 2 (\texttt{src/telemetry/hdr\_histogram.hpp}).}, label=lst:hist2]{listings/hdr_histogram.hpp}
+
+\lstinputlisting[language=C++, caption={Wait-free single-producer, single-consumer ring (\texttt{src/telemetry/spsc\_queue.hpp}).}, label=lst:spsc]{listings/spsc_queue.hpp}
+
+\lstinputlisting[language=C++, caption={Unix process counters for cycles, instructions, and page faults (\texttt{src/telemetry/process\_counters.hpp}).}, label=lst:counters]{listings/process_counters.hpp}
+
+\end{appendices}
+
+\setlength{\bibsep}{0pt plus 0.3ex}
+\setlength{\bibsep}{0pt plus 0.3ex}
+\bibliography{../literature/peer_reviewed_papers}
+
+\end{document}
